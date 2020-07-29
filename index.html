@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="./demos/style.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+        integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/locale/pt-br.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            const d = console.log;
+
+
+            setTimeout(() => {
+                var logar = (nome, cpf) => {
+
+                    obSol.cpf = cpf;
+                    obSol.nome = nome;
+
+                    class Logado extends React.Component {
+                        constructor(props) {
+                            super(props);
+                            this.state = { cpf: cpf, nome: nome }
+
+                        }
+
+                        render() {
+
+                            return e('span', { key: 'logad' }, 'Seja bem vindo, ' + this.state.nome + ' - ' + this.state.cpf)
+                        }
+                    }
+
+                    const domContainer = document.querySelector('#logado');
+                    ReactDOM.render(e(Logado), domContainer);
+                };
+                logar(logado.nome, logado.cpf);
+
+            }, 2000)
+
+
+            axios
+                .get("http://127.0.0.1:8049/webrunstudio/ZServicoBuscarSolicitacoes.rule?sys=CCU&CPF=07658259705")
+                .then(response => {
+
+                    let res = response.data.dados;
+
+                    if(!res){
+                        res = [];
+                    }
+
+                    res.forEach(
+                        (a, b, c) => {
+                            a.DataSolicitacaoDevolucao = 'Data de Solicitação: ' + moment(a.DataSolicitacaoDevolucao).format('DD/MM/YYYY');
+                            a.StatusSolciitacao = 'Status atual: ' + a.StatusSolciitacao;
+                            a.pos = b + 1;
+                            a.total = d.length;
+
+                            if (b === 0) {
+                                a.className = 'slide active'
+                            } else {
+                                a.className = 'slide'
+                            }
+
+                            a.pos = b + 1;
+                            a.total = c.length;
+                        }
+                    );
+
+
+                    var slides = () => {
+
+                        class Cards extends React.Component {
+                            constructor(props) {
+                                super(props);
+
+                                this.state = {
+                                    conteudo: res,
+                                    pos: 0
+                                }
+
+                                this.selectCard = this.selectCard.bind(this);
+                                this.voltar = this.voltar.bind(this);
+                                this.avancar = this.avancar.bind(this);
+
+                            }
+
+                            selectCard = (pos) => {
+                                return this.state.conteudo[pos];
+                            }
+
+                            voltar = () => {
+                                let aux = 1;
+                                if (this.state.pos === 0) {
+                                    aux = 0
+                                }
+                                this.setState({ pos: this.state.pos - aux })
+                            }
+
+                            avancar = () => {
+                                let tamanho = this.state.conteudo.length;
+                                let aux = 1;
+                                if (this.state.pos === tamanho - 1) {
+                                    aux = 0
+                                }
+                                this.setState({ pos: this.state.pos + aux })
+                            }
+
+                            componentDidMount() {
+                                $('#avancar').click(this.avancar);
+
+                                $('#voltar').click(this.voltar)
+
+                                if (this.state.conteudo.length === 0) {
+                                    $('#footer-card').hide();
+                                } else {
+                                    $('#footer-card').show();
+                                }
+                            }
+
+
+
+                            render() {
+                                let a = this.selectCard(this.state.pos);
+
+                                if (this.state.conteudo.length === 0) {
+                                    return e('span', { key: Math.random(), className: 'datasolicitacao' }, 'Ainda sem solicitações');
+                                }
+
+
+                                return e('div', { key: Math.random(), id: 'divCards' }, [
+                                    e('span', { key: Math.random(), className: 'datasolicitacao' }, a.DataSolicitacaoDevolucao),
+                                    e('span', { key: Math.random(), className: 'statussolicitacao' }, a.StatusSolciitacao),
+                                    e('span', { key: Math.random(), className: 'paginacards' }, a.pos + ' de ' + a.total),
+                                    e('div', { key: Math.random(), className: 'divButtonListas' }, e('button', { key: Math.random(), className: 'btn btn-light btn-lg btn-block', onClick: () => buscarSolicitacao(a.idSolicitacaoMercadoria) }, 'Consultar'))
+                                ])
+                            }
+                        }
+
+                        const domContainer = document.querySelector('#conteudo-card');
+                        ReactDOM.render(e(Cards), domContainer);
+                    }
+
+                    var listas = () => {
+
+                        class Listas extends React.Component {
+                            constructor(props) {
+                                super(props);
+
+                                this.state = {
+                                    conteudo: res,
+                                    pos: 0
+                                }
+
+                                this.selectLista = this.selectLista.bind(this);
+                            }
+
+
+                            selectLista = (pos) => {
+                                return this.state.conteudo[pos];
+                            }
+
+                            componentDidMount() {
+                            }
+
+                            render() {
+                                let a = this.selectLista(this.state.pos);
+
+                                if (this.state.conteudo.length === 0) {
+                                    return e('span', { key: Math.random(), className: 'datasolicitacao' }, 'Ainda sem solicitações');
+                                }
+
+                                let arrlistas = []
+
+                                this.state.conteudo.forEach(a => {
+                                    let arr = []
+                                    arr.push(e('span', { key: Math.random(), className: 'datasolicitacao' }, a.DataSolicitacaoDevolucao));
+                                    arr.push(e('span', { key: Math.random(), className: 'statussolicitacao' }, a.StatusSolciitacao));
+                                    arr.push(e('span', { key: Math.random(), className: 'paginacards' }, a.pos + ' de ' + a.total))
+                                    arr.push(e('div', { key: Math.random(), className: 'divButtonListas' }, e('button', { key: Math.random(), className: 'btn btn-light btn-lg btn-block', onClick: () => buscarSolicitacao(a.idSolicitacaoMercadoria) }, 'Consultar')))
+                                    let divBody = e('div', { key: Math.random(), className: 'divlistas' }, arr);
+                                    arrlistas.push(divBody);
+                                })
+                                return e('div', { key: Math.random() }, arrlistas);
+                            }
+                        }
+
+                        const domContainer = document.querySelector('#listas');
+                        ReactDOM.render(e(Listas), domContainer);
+                    }
+
+
+                    slides();
+                    listas();
+
+
+
+                })
+                .catch(error => console.log(error));
+
+        });
+
+    </script>
+
+    <title>Document</title>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- linha do cabeçalho prinipal -->
+        <div class="cabecalhoinicial">
+            <h5 class="informacoes">Solicitações de Mercadorias Apreendidas</h5>
+        </div>
+
+        <div id="logado"></div>
+
+        <!-- linha da avisos -->
+        <div class="avisos">
+
+            <h5 class="informacoes">INFORMAÇÕES IMPORTANTES</h5>
+
+            <p>Faça uma nova solicitação no botão de “Nova Solicitação” ou selecione uma das solicitações anteriores
+                para acompanhar seu andamento.
+            </p>
+            <span class="alerta">O solicitante tem até 7 dias para requerer a devolução de suas mercadorias. Após
+                esse prazo, as
+                mercadorias não poderão mais ser devolvidas e deverão ser descartadas, doadas ou leiloadas.
+            </span>
+            <!-- <a target="_blank"href="www2.rio.rj.gov.br/sicop/sicop.asp" class="stretched-link">Go somewhere</a> -->
+        </div>
+
+        <div class="row">
+            <div class="col-sm">
+                <div class="cabecalhosecundario">
+                    <h5 class="informacoes">MINHAS SOLICITAÇÕES</h5>
+                    <p>Se for uma nova solicitação, selecione uma das opções abaixo:</p>
+
+                    <div class="row">
+                        <div class="col-sm colunlacre">
+                            <button type="button" id="btnLacre" class="btn btn-info btn-lg btn-block"
+                                onclick="solLacre()">POR
+                                NÚMERO DE LACRE</button>
+                        </div>
+                        <div class="col-sm colunadescricao">
+                            <button type="button" class="btn btn-info btn-lg btn-block" onclick="solDescricao()">POR
+                                LOCAL DA
+                                APREENSÃO</button>
+                        </div>
+                    </div>
+
+                    <p>Para consultar uma solicitação, selecione uma das listadas a seguir</p>
+
+                    <div id="listas"></div>
+
+
+                    <div id="card">
+
+                        <div id="conteudo-card"></div>
+                        <div class="row" id="footer-card">
+                            <div class="col-sm" style="width: 50%;"><button type="button" id="voltar"
+                                    class="btn btn-link btn-lg btn-block">anterior</button>
+                            </div>
+
+                            <div class="col-sm" style="width: 50%;"><button type="button" id="avancar"
+                                    class="btn btn-link btn-lg btn-block">próxima</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-sm">
+                <div id="conteudo-solicitacao" class="conteudosolicitacao" style="height: 97%;">
+
+                </div>
+            </div>
+
+
+
+
+
+
+
+        </div>
+
+
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+            integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+            crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+        <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/javascript.util/0.12.12/javascript.util.min.js"></script>
+        <script src='./scub.js'></script>
+
+</body>
+
+</html>

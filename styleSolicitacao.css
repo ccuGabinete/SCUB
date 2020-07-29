@@ -1,0 +1,233 @@
+.btn-info {
+    border: solid 3px #0bb975;
+    padding: 8px 59px 9px 18px;
+    margin-right: 22px;
+    margin-bottom: 22px;
+    border-radius: 22.7px;
+    background-color: #0bb975;
+    display: inline-block;
+    font-family: "museo_sans500", sans-serif;
+    font-size: 19px;
+    font-weight: 500;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+    color: #fff;
+}
+
+.btn-info:hover {
+    border: solid 3px #0bb975;
+    padding: 8px 59px 9px 18px;
+    margin-right: 22px;
+    margin-bottom: 22px;
+    border-radius: 22.7px;
+    background-color: #fff;
+    display: inline-block;
+    font-family: "museo_sans500", sans-serif;
+    font-size: 19px;
+    font-weight: 500;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+    color: #0bb975;
+}
+
+.listaRespostaLacre {
+    list-style-type: circle;
+}
+
+.divRespostaLacre {
+    background: white;
+}
+
+.form-control-plaintext {
+    border-style: solid;
+    border-width: 1px;
+    border-color: blue;
+}
+
+.divPrincipalSolicitacoes {
+    padding-left: 10px;
+}
+
+.lableSolicitacoes {
+    background: #008eb7;
+    color: white;
+    font-size: 0.9em !important;
+    padding: 5px 5px 0 15px;
+    text-align: center;
+}
+
+.list-group-item {
+    font-size: 0.6em !important;
+}
+
+.list-group-item:hover {
+    background: #138496;
+    color: white
+}
+
+.header {
+    margin: 1em 1em 0 1em !important;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #999999;
+    text-align: justify;
+}
+
+.subheader {
+    margin: 1em 1em 0 1em !important;
+}
+
+.nav {
+    width: 95%;
+    padding-left: 15px;
+    padding-bottom: 15px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #999999;
+    text-align: center;
+}
+
+.content {
+    border-style: solid;
+    border-width: 1px;
+    border-color: #999999;
+    margin-left: 0.5rem !important;
+}
+
+.informacoes {
+    color: #02B0D6;
+}
+
+.solicitacoes {
+    color: #02B0D6;
+}
+
+.alerta {
+    color: red;
+}
+
+@media (min-width: 10px) {
+    .container-fluid {
+        font-size: 0.5em !important;
+    }
+    h5 {
+        font-size: 0.7rem !important;
+    }
+    .solicitacoes {
+        font-size: 0.7em !important;
+    }
+    .btn-info {
+        font-size: 0.5em !important;
+    }
+}
+
+@media (min-width: 240px) {
+    .container-fluid {
+        font-size: 0.8em !important;
+    }
+    h5 {
+        font-size: 0.8rem !important;
+    }
+    .solicitacoes {
+        font-size: 0.7em !important;
+    }
+    .btn-info {
+        font-size: 0.5em !important;
+    }
+}
+
+@media (min-width: 360px) {
+    .container-fluid {
+        font-size: 0.9em !important;
+    }
+    h5 {
+        font-size: 0.9rem !important;
+    }
+    .solicitacoes {
+        font-size: 0.7em !important;
+    }
+    .btn-info {
+        font-size: 0.5em !important;
+    }
+}
+
+@media (min-width: 480px) {
+    .container-fluid {
+        font-size: 1em !important;
+    }
+    h5 {
+        font-size: 1rem !important;
+    }
+    .solicitacoes {
+        font-size: 0.7em !important;
+    }
+    .btn-info {
+        font-size: 0.6em !important;
+    }
+}
+
+@media (min-width: 576px) {
+    .container-fluid {
+        font-size: 1em !important;
+    }
+    h5 {
+        font-size: 1.1rem !important;
+    }
+    .solicitacoes {
+        font-size: 0.8em !important;
+    }
+    .btn-info {
+        font-size: 0.5em !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .container-fluid {
+        font-size: 1.1em !important;
+    }
+    h5 {
+        font-size: 1.2rem !important;
+    }
+    .solicitacoes {
+        font-size: 0.8em !important;
+    }
+    .btn-info {
+        font-size: 0.6em !important;
+    }
+}
+
+@media (min-width: 992px) {
+    .container-fluid {
+        font-size: 1.1em !important;
+    }
+    h5 {
+        font-size: 1.3rem !important;
+    }
+    .solicitacoes {
+        font-size: 0.9em !important;
+    }
+    .btn-info {
+        font-size: 0.6em !important;
+    }
+}
+
+@media (min-width: 1200px) {
+    .container-fluid {
+        font-size: 1.2em !important;
+    }
+    h5 {
+        font-size: 1.4rem !important;
+    }
+    .solicitacoes {
+        font-size: 1em !important;
+    }
+    .btn-info {
+        font-size: 0.6em !important;
+    }
+}
