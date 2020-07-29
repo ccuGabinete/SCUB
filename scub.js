@@ -221,7 +221,7 @@ var solDescricao = () => {
                         alert('Informe o local da apreensão');
                     } else {
 
-                        let resposta = 'Descrição: ' + this.state.descricao.concat(';Data: ' + this.state.data + ';Local: ' + this.state.local);
+                        let resposta = 'Descrição: ' + this.state.descricao.concat(';Data: ' + moment(this.state.data).format('DD/MM/YYYY') + ';Local: ' + this.state.local);
                         c(resposta);
 
                         axios
