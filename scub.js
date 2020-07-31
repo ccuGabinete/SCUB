@@ -62,7 +62,7 @@ var resLacre = (NumeroAuto, DataApreensao, Logradouro) => {
                 let cpf = obSol.cpf;
                 let nome = obSol.nome;
                 let idauto = obSol.idauto;
-                let descricao = 'Descricao: ' + obSol.descricao  + ';Data: ' + obSol.dataLacre + ';Lacre: ' + obSol.lacre + ';Auto: ' + obSol.numeroauto + ';Logradouro: ' + obSol.logradouro;
+                let descricao = 'Descricao: ' + obSol.descricao + ';Data: ' + obSol.dataLacre + ';Lacre: ' + obSol.lacre + ';Auto: ' + obSol.numeroauto + ';Logradouro: ' + obSol.logradouro;
 
                 if (!descricao) {
                     alert('Preencha a Descrição das mercadorias')
@@ -234,7 +234,7 @@ var solDescricao = () => {
                                     var res = response.data.dados[0];
                                     c(res);
                                     sucesso();
-                                    obSol.descricao = null;   
+                                    obSol.descricao = null;
                                     atualizarHistorico(res.idSolicitacaoMercadoria, 1)
                                 }
                             })
@@ -402,6 +402,7 @@ var consultaSolicitacao = (dados) => {
             let numeroprocesso = null;
             let arrDescricao;
             let listaArrayDescricao = [];
+            let dataSolicitacao;
 
 
             this.state.conteudo.forEach(
@@ -409,6 +410,7 @@ var consultaSolicitacao = (dados) => {
                     arrDescricao = a.Descricao.split(';');
                     numeroprocesso = a.Processo;
                     codigosolicitacao = a.idSolicitacaoMercadoria;
+                    dataSolicitacao = a.Data;
                     const linhaData = e('td', { key: Math.random() }, moment(a.Data).format('DD/MM/YYYY'));
                     const linhaEtapa = e('td', { key: Math.random() }, a.StatusSolciitacao);
                     const linhaContador = e('th', { key: Math.random() }, b + 1);
@@ -421,11 +423,11 @@ var consultaSolicitacao = (dados) => {
             }
 
             arrDescricao.forEach(a => {
-                let listaDescricao = e('li', {key: Math.random()}, a)
+                let listaDescricao = e('li', { key: Math.random() }, a)
                 listaArrayDescricao.push(listaDescricao);
             });
 
-            let corpoListaDescricao = e('div', {key: Math.random(), className: 'detalhamentoConsulta'}, e('ul', {key: Math.random()}, listaArrayDescricao));
+            let corpoListaDescricao = e('div', { key: Math.random(), className: 'detalhamentoConsulta' }, e('ul', { key: Math.random() }, listaArrayDescricao));
 
 
             //Corpo da tabela
@@ -433,12 +435,13 @@ var consultaSolicitacao = (dados) => {
 
             const divDetalhamento = e('div', { key: Math.random() },
                 [
-                    e('span', { key: Math.random(), className: 'datasolicitacao' }, 'Código da Solicitação: ' + codigosolicitacao),
-                    e('span', { key: Math.random(), className: 'statussolicitacao' }, 'Processo: ' + numeroprocesso)                    
+                    e('span', { key: Math.random(), className: 'datasolicitacao', id: 'codigosolicitacao' }, 'Código da Solicitação: ' + codigosolicitacao),
+                    e('span', { key: Math.random(), className: 'statussolicitacao' }, 'Processo: ' + numeroprocesso)
                 ])
             const tbody = e('tbody', { key: Math.random() }, arr);
             const table = e('table', { key: Math.random(), className: 'table table-bordered table-info' }, [thead, tbody]);
-            return e('div', { key: Math.random() }, [divTituloSolicitar, divDetalhamento, corpoListaDescricao, table]);
+            return e('div', { key: Math.random() }, [divTituloSolicitar, divDetalhamento, corpoListaDescricao, table, ,
+                e('button', { key: Math.random(), className: 'btn btn-link btn-lg btn-block', id: 'button-prazos', onClick: () => carregarPrazos(codigosolicitacao, dataSolicitacao) }, 'CONSULTAR PRAZOS')]);
         }
     }
 
@@ -463,11 +466,107 @@ const buscarSolicitacao = (value) => {
 
 const atualizarHistorico = (IDSOLICITACAO, IDSTATUS, DATA) => {
     axios
-    .get("http://127.0.0.1:8049/webrunstudio/ZServicoAtualizarHistorico.rule?sys=CCU&IDSOLICITACAO=" + IDSOLICITACAO +  "&IDSTATUS=" + IDSTATUS + "&DATA=" + DATA)
-    .then(response => {
-        const res = response.data.dados;
-        
-        c(res);
-    })
-    .catch(error => console.log(error));
+        .get("http://127.0.0.1:8049/webrunstudio/ZServicoAtualizarHistorico.rule?sys=CCU&IDSOLICITACAO=" + IDSOLICITACAO + "&IDSTATUS=" + IDSTATUS + "&DATA=" + DATA)
+        .then(response => {
+            const res = response.data.dados;
+        })
+        .catch(error => console.log(error));
 }
+
+
+
+const carregarPrazos = (idSolicitacaoMercadoria, dataSolicitacao) => {
+
+    axios
+        .get("http://127.0.0.1:8049/webrunstudio/ZServicoBuscarAuto.rule?sys=CCU&IDSOLICITACAO=" + idSolicitacaoMercadoria)
+        .then(response => {
+
+            var obj = {};
+            obj.DataSolicitacao = dataSolicitacao;
+
+            if (response.data.status === 'error') {
+                obj.Apreensao = null;
+                obj.LimiteSolicitacao = null;
+                limiteDiasUteis(obj);
+            } else {
+                const res = response.data.dados[0];
+                obj.Apreensao = res.DataApreensao;
+                obj.LimiteSolicitacao = res.DataLimite;
+                limiteDiasUteis(obj);
+            }
+
+        })
+        .catch(error => console.log(error));
+}
+
+
+const limiteDiasUteis = (obj) => {
+    this.data = obj.DataSolicitacao;
+    let bol = false;
+    let arrDatas = [];
+    let urls = [];
+
+    for (let index = 0; index < 12; index++) {
+        this.data = moment(this.data).add(1, 'days');
+        let semana = moment(this.data).format('ddd');
+        if(semana !== 'sáb' && semana !== 'dom'){
+            let obj = {url: 'http://127.0.0.1:8049/webrunstudio/ZServicoBuscarFeriado.rule?sys=CCU&DATA=' + moment(this.data).format('YYYY-MM-DD'), data: moment(this.data).format('DD/MM/YYYY')}
+            urls.push(obj);
+        }
+    }
+
+    c(urls);
+
+    
+    async function getTodos() {
+        for (const [idx, obj] of urls.entries()) {
+            const todo = await axios
+                .get(obj.url)
+                .then(response => {
+                    if( response.data.length === 0){
+                        arrDatas.push(obj.data);
+                    }
+                })
+                .catch(error => console.log(error));
+        }
+
+        obj['limitedogerente'] = arrDatas[4]
+        console.log(obj);
+
+
+        class Prazos extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = { value: '' }
+    
+                this.handleChange = this.handleChange.bind(this);
+    
+            }
+    
+            componentDidMount() {
+    
+            }
+    
+    
+            handleChange(event) {
+                this.setState({ value: event.target.value });
+            }
+    
+            render() {
+                const tituloSolicitar = e('p', { key: Math.random() }, 'CONSULTAR PRAZOS DA SOLICITAÇÃO');
+                const divTituloSolicitar = e('div', { key: Math.random(), className: 'lableSolicitacoes' }, tituloSolicitar);
+                return e('div', { key: Math.random() }, [divTituloSolicitar]);
+            }
+        }
+    
+        const domContainer = document.querySelector('#conteudo-solicitacao');
+        ReactDOM.render(e(Prazos), domContainer);
+
+    }
+
+
+    getTodos();
+
+}
+
+
