@@ -372,7 +372,19 @@ var consultaSolicitacao = (dados) => {
         }
 
         componentDidMount() {
+            $('#button-taxa').hide();
+            $('#button-recurso').hide();
+            
+            this.state.conteudo.forEach(a => {
+ 
+               if(a.StatusSolciitacao === 'DEFERIDA'){
+                $('#button-taxa').show();
+               }
 
+               if(a.StatusSolciitacao === 'INDEFERIDA'){
+                $('#button-recurso').show();
+               }
+            })
         }
 
 
@@ -381,8 +393,6 @@ var consultaSolicitacao = (dados) => {
         }
 
         render() {
-
-
 
             // Área para renderizar o cabeçalho de consuçta
             const tituloSolicitar = e('p', { key: Math.random() }, 'CONSULTAR SOLICITAÇÃO')
@@ -407,6 +417,7 @@ var consultaSolicitacao = (dados) => {
 
             this.state.conteudo.forEach(
                 (a, b) => {
+                    
                     arrDescricao = a.Descricao.split(';');
                     numeroprocesso = a.Processo;
                     codigosolicitacao = a.idSolicitacaoMercadoria;
@@ -441,7 +452,10 @@ var consultaSolicitacao = (dados) => {
             const tbody = e('tbody', { key: Math.random() }, arr);
             const table = e('table', { key: Math.random(), className: 'table table-bordered table-info' }, [thead, tbody]);
             return e('div', { key: Math.random() }, [divTituloSolicitar, divDetalhamento, corpoListaDescricao, table, ,
-                e('button', { key: Math.random(), className: 'btn btn-link btn-lg btn-block', id: 'button-prazos', onClick: () => carregarPrazos(codigosolicitacao, dataSolicitacao) }, 'CONSULTAR PRAZOS')]);
+                e('button', { key: Math.random(), className: 'btn btn-link btn-lg btn-block', id: 'button-prazos', onClick: () => carregarPrazos(codigosolicitacao, dataSolicitacao) }, 'CONSULTAR PRAZOS'),
+                e('button', { key: Math.random(), className: 'btn btn-link btn-lg btn-block', id: 'button-taxa' }, 'IMPRIMIR TAXA E ACOMPANHAR PAGAMENTO'),
+                e('button', { key: Math.random(), className: 'btn btn-link btn-lg btn-block', id: 'button-recurso' }, 'RECORRER DA DECISÃO')
+            ]);
         }
     }
 
@@ -509,56 +523,116 @@ const limiteDiasUteis = (obj) => {
     for (let index = 0; index < 12; index++) {
         this.data = moment(this.data).add(1, 'days');
         let semana = moment(this.data).format('ddd');
-        if(semana !== 'sáb' && semana !== 'dom'){
-            let obj = {url: 'http://127.0.0.1:8049/webrunstudio/ZServicoBuscarFeriado.rule?sys=CCU&DATA=' + moment(this.data).format('YYYY-MM-DD'), data: moment(this.data).format('DD/MM/YYYY')}
+        if (semana !== 'sáb' && semana !== 'dom') {
+            let obj = { url: 'http://127.0.0.1:8049/webrunstudio/ZServicoBuscarFeriado.rule?sys=CCU&DATA=' + moment(this.data).format('YYYY-MM-DD'), data: moment(this.data).format('DD/MM/YYYY') }
             urls.push(obj);
         }
     }
 
-    c(urls);
-
-    
     async function getTodos() {
         for (const [idx, obj] of urls.entries()) {
             const todo = await axios
                 .get(obj.url)
                 .then(response => {
-                    if( response.data.length === 0){
+                    if (response.data.length === 0) {
                         arrDatas.push(obj.data);
                     }
                 })
                 .catch(error => console.log(error));
         }
 
-        obj['limitedogerente'] = arrDatas[4]
-        console.log(obj);
-
-
+        obj['limitedogerente'] = arrDatas[4];
+   
         class Prazos extends React.Component {
             constructor(props) {
                 super(props);
                 this.state = { value: '' }
-    
+
                 this.handleChange = this.handleChange.bind(this);
-    
+
             }
-    
+
             componentDidMount() {
-    
+
             }
-    
-    
+
+
             handleChange(event) {
                 this.setState({ value: event.target.value });
             }
-    
+
             render() {
                 const tituloSolicitar = e('p', { key: Math.random() }, 'CONSULTAR PRAZOS DA SOLICITAÇÃO');
                 const divTituloSolicitar = e('div', { key: Math.random(), className: 'lableSolicitacoes' }, tituloSolicitar);
-                return e('div', { key: Math.random() }, [divTituloSolicitar]);
+
+                //Header da tabela
+                const contador = e('th', { key: Math.random(), scope: 'row', className: 'coluna' }, ' ');
+                const etapas = e('th', { key: Math.random(), scope: 'col', className: 'coluna' }, 'ETAPA');
+                const data = e('th', { key: Math.random(), scope: 'col', className: 'coluna' }, 'DATA');
+                const linhaTitulo = e('tr', { key: Math.random() }, [contador, etapas, data]);
+                const thead = e('thead', { key: Math.random() }, [linhaTitulo]);
+
+
+                //Body da tabela
+                let arr = [];
+
+                //linha data da apreensão
+
+                let linhaData;
+                
+                if(!obj.Apreensao){
+                    linhaData = e('td', { key: Math.random() }, 'Aguardando confirmação');
+                } else {
+                    linhaData = e('td', { key: Math.random() }, moment(obj.Apreensao).format('DD/MM/YYYY'));
+                }
+
+                
+                let linhaEtapa = e('td', { key: Math.random() }, 'Data da Apreensão');
+                let linhaContador = e('th', { key: Math.random() }, 1);
+                let linhaConteudo = e('tr', { key: Math.random() }, [linhaContador, linhaEtapa, linhaData]);
+                arr.push(linhaConteudo)
+
+
+                //linha data da solicitação
+                
+                linhaData = e('td', { key: Math.random() }, moment(obj.DataSolicitacao).format('DD/MM/YYYY'));
+                linhaEtapa = e('td', { key: Math.random() }, 'Data da Solicitacao');
+                linhaContador = e('th', { key: Math.random() }, 2);
+                linhaConteudo = e('tr', { key: Math.random() }, [linhaContador, linhaEtapa, linhaData]);
+                arr.push(linhaConteudo)
+
+                //linha data máxima para solicitar
+
+                if(!obj.LimiteSolicitacao){
+                    linhaData = e('td', { key: Math.random() }, 'Aguardando confirmação');
+                } else {
+                    linhaData = e('td', { key: Math.random() }, moment(obj.LimiteSolicitacao).format('DD/MM/YYYY'));
+                }
+
+
+               
+                linhaEtapa = e('td', { key: Math.random() }, 'Limite para Solicitar');
+                linhaContador = e('th', { key: Math.random() }, 3);
+                linhaConteudo = e('tr', { key: Math.random() }, [linhaContador, linhaEtapa, linhaData]);
+                arr.push(linhaConteudo)
+
+                //linha data máxima para resposta
+                linhaData = e('td', { key: Math.random() }, obj.limitedogerente);
+                linhaEtapa = e('td', { key: Math.random() }, 'Limite para Resposta');
+                linhaContador = e('th', { key: Math.random() }, 4);
+                linhaConteudo = e('tr', { key: Math.random() }, [linhaContador, linhaEtapa, linhaData]);
+                arr.push(linhaConteudo)
+
+
+
+                const tbody = e('tbody', { key: Math.random() }, arr);
+                const table = e('table', { key: Math.random(), className: 'table table-bordered table-info' }, [thead, tbody]);
+
+
+                return e('div', { key: Math.random() }, [divTituloSolicitar, table]);
             }
         }
-    
+
         const domContainer = document.querySelector('#conteudo-solicitacao');
         ReactDOM.render(e(Prazos), domContainer);
 
