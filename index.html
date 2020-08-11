@@ -15,7 +15,12 @@
     <script>
         $(document).ready(function () {
             const d = console.log;
-            var DataSolicitacao;
+
+            $('#conteudo-decisao').hide();
+
+            $("#button-documento").click(() => {
+                alert('este botão chama o botão id button-documento');
+            });
 
             axios
                 .get("http://127.0.0.1:8049/webrunstudio/ZServicoBuscarUsuario.rule?sys=CCU")
@@ -207,9 +212,6 @@
                 })
                 .catch(error => console.log(error));
 
-
-
-
         });
 
     </script>
@@ -243,13 +245,13 @@
             <!-- <a target="_blank"href="www2.rio.rj.gov.br/sicop/sicop.asp" class="stretched-link">Go somewhere</a> -->
         </div>
 
-        <div class="row">
+        <div class="row" style="margin-bottom: 2rem;">
             <div class="col-sm">
                 <div class="cabecalhosecundario">
                     <h5 class="informacoes">MINHAS SOLICITAÇÕES</h5>
                     <p>Se for uma nova solicitação, selecione uma das opções abaixo:</p>
 
-                    <div class="row" >
+                    <div class="row">
                         <div class="col-sm colunlacre">
                             <button type="button" id="btnLacre" class="btn btn-info btn-lg btn-block"
                                 onclick="solLacre()">POR
@@ -291,11 +293,23 @@
                 </div>
             </div>
 
+        </div>
 
+        <div class="row">
+            <div class="col-sm">
 
+            </div>
 
+            <div class="col-sm">
+                <div id="conteudo-decisao">
+                    <div id="conteudo-decisao">
+                        <button class="btn btn-link btn-lg btn-block" id="button-taxa">Imprimir Taxa</button>
+                        <button class="btn btn-link btn-lg btn-block" id="button-documento">Inserir Documento</button>
+                    </div>
 
-
+                    <span id="avisopagamento" class="aviso">AGUARDANDO CONFIRMAÇÃO DO PAGAMENTO</span>
+                </div>
+            </div>
 
         </div>
 
@@ -312,8 +326,6 @@
         <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
         <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
-
-
         <script src="https://cdnjs.cloudflare.com/ajax/libs/javascript.util/0.12.12/javascript.util.min.js"></script>
         <script src='./scub.js'></script>
 
